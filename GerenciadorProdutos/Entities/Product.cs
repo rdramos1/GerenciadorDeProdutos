@@ -9,12 +9,18 @@ namespace GerenciadorProdutos.Entities {
         public double Price { get; private set; }
         public Category Category { get; private set; }
 
-        public Product(string name, int id, int quantity, double price, Category category) {
+        public Product(string name,int id, int quantity, double price, Category category) {
+
+            Name = name;
+            Id = id;
+            Quantity = quantity;
+            Price = price;
+            Category = category;
 
             if (string.IsNullOrEmpty(name)) {
                 throw new ProductException("Name cannot be null or empty");
             }
-            if (id <= 0) { /*Resolver o B.O do Id*/
+            if (id < 0) { 
                 throw new ProductException("ID cannot be negative");
             }
             if (quantity < 0) {
@@ -34,17 +40,11 @@ namespace GerenciadorProdutos.Entities {
             }
             if (category.Products.Count > 0) {
                 foreach (Product product in category.Products) {
-                    if (product.Id == id) {
+                    if (product.Id == Id) {
                         throw new ProductException("ID already exists in category");
                     }
                 }
             }
-
-            Name = name;
-            Id = id;
-            Quantity = quantity;
-            Price = price;
-            Category = category;
 
             Category.Products.Add(this);
 

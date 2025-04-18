@@ -3,11 +3,11 @@ using GerenciadorProdutos.Exceptions;
 
 namespace GerenciadorProdutos.Entities {
     public class Product {
-        public string Name { get; private set; }
-        public int Id { get; private set; }
-        public int Quantity { get; private set; }
-        public double Price { get; private set; }
-        public Category Category { get; private set; }
+        public string Name { get; set; }
+        public int Id { get; set; }
+        public int Quantity { get; set; }
+        public double Price { get; set; }
+        public Category Category { get; set; }
 
         public Product(string name,int id, int quantity, double price, Category category) {
 
@@ -46,38 +46,13 @@ namespace GerenciadorProdutos.Entities {
                 }
             }
 
-            Category.Products.Add(this);
+            
 
         }
 
-        public void ChangeName(string name) {
-            Name = name;
-        }
-        public void ChangeQuantity(int quantity) {
-            if (quantity <= 0) {
-                throw new ProductException("Quantity cannot be negative");
-            }
-            else if (quantity < Quantity) {
-                throw new ProductException("Quantity cannot be less than current quantity");
-            }
-            Quantity = quantity;
-        }
-        public void ChangePrice(double price) {
-            Price = price;
-        }
-        public void ChangeCategory(Category category) {
-            Category = category;
+        public override string ToString() {
+            return $"Product Name: {Name}\nProduct ID: {Id}\nProduct Quantity: {Quantity}\nProduct Price: {Price}\nProduct Category: {Category.Name}\n";
         }
 
-        public override string? ToString() {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"Product Name: {Name}");
-            sb.AppendLine($"Product ID: {Id}");
-            sb.AppendLine($"Product Quantity: {Quantity}");
-            sb.AppendLine($"Product Price: {Price}");
-            sb.AppendLine($"Product Category: {Category.Name}");
-
-            return sb.ToString();
-        }
     }
 }

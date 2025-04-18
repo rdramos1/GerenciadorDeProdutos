@@ -1,27 +1,34 @@
-﻿using GerenciadorProdutos.Entities;
+﻿using GerenciadorProdutos.Data;
+using GerenciadorProdutos.Entities;
+using GerenciadorProdutos.Interfaces;
+using GerenciadorProdutos.Service;
 
 namespace GerenciadorProdutos {
     public class Program {
-        public static void Main(string[] args) { 
-            List<Category> categories = new List<Category>();
-            List<Product> products = new List<Product>();
+        public static void Main(string[] args) {
+            /*IDataBase dataBase = new JsonDataBase("C:\\temp\\GerenciadorDeProdutos");
 
-            Category category = new Category("Electronics", categories.Count);
-            categories.Add(category);
+            Inventory inventory = dataBase.Load(new Inventory());
+            SaleRecorder saleRecorder = dataBase.Load(new SaleRecorder());
 
-            Product product = new Product("Smartphone", products.Count, 5, 800.00, categories[0]);
-            products.Add(product);
+            dataBase.Save(inventory);
+            dataBase.Save(saleRecorder); 
+            */
 
-            Console.WriteLine(product.ToString());
+            Inventory inventory = new Inventory();
+            SaleRecorder saleRecorder = new SaleRecorder();
 
-            try {
-                product.ChangeQuantity(5);
-            } catch (Exception ex) {
-                Console.WriteLine(ex);
-            }
-            
-            Console.WriteLine("Say Hi");
+            inventory.CreateCategory("Electronics");
+            inventory.CreateCategory("Clothing");
+            inventory.AddProductByCategory("Laptop", 10, 1500.00, inventory.Categories[0]);
+            inventory.AddProductByCategory("Smartphone", 20, 800.00, inventory.Categories[0]);
+
+            Screen.start(inventory, saleRecorder);
+
+            Console.WriteLine(inventory.ToString());
+
             Console.ReadLine();
+
         }
     }
 }

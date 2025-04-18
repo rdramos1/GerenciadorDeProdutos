@@ -15,23 +15,7 @@ namespace GerenciadorProdutos.Entities {
             }
 
         }
-        public void ChangeName(string name) {
-            Name = name;
-        }
-        public void ChangeId(int id) {
-            Id = id;
-        }
-        public void ChangeProduct(Product product) {
-            Products.Add(product);
-        }
-        public void RemoveProduct(Product product) {
-            if (Products.Contains(product)) {
-                Products.Remove(product);
-            }
-            else {
-                throw new CategoryException("Product not found in category");
-            }
-        }
+       
         public override string ToString() {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"Category: {Name}");

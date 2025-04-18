@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/GerenciadorProdutos/Data/JsonDataBase.cs
+/GerenciadorProdutos/Entities/Sale.cs
+/GerenciadorProdutos/Interfaces/IDataBase.cs
+/GerenciadorProdutos/Service/SaleRecorder.cs

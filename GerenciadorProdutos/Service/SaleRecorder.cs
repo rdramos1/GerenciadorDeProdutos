@@ -25,7 +25,8 @@ namespace GerenciadorProdutos.Service {
                 return;
             }
             foreach (var sale in Sales) {
-                Console.WriteLine($"Sale ID: {sale.Id}, Product: {sale.Product.Name}, Quantity: {sale.Quantity}, Date: {sale.SaleDate}");
+                double price = sale.Product.Price * sale.Quantity;
+                Console.WriteLine($"Sale ID: {sale.Id}, Product: {sale.Product.Name}, Quantity: {sale.Quantity},Product price {sale.Product.Price}, All price {price}, Date: {sale.SaleDate}");
             }
         }
 

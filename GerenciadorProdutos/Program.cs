@@ -1,4 +1,5 @@
-﻿using GerenciadorProdutos.Data;
+﻿using System.Globalization;
+using GerenciadorProdutos.Data;
 using GerenciadorProdutos.Entities;
 using GerenciadorProdutos.Interfaces;
 using GerenciadorProdutos.Service;
@@ -6,6 +7,7 @@ using GerenciadorProdutos.Service;
 namespace GerenciadorProdutos {
     public class Program {
         public static void Main(string[] args) {
+
             /*IDataBase dataBase = new JsonDataBase("C:\\temp\\GerenciadorDeProdutos");
 
             Inventory inventory = dataBase.Load(new Inventory());
@@ -30,7 +32,9 @@ namespace GerenciadorProdutos {
             Console.ReadLine();
 
         }
+
     }
+
 }
 
 

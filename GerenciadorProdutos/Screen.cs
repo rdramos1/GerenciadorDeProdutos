@@ -106,7 +106,7 @@ namespace GerenciadorProdutos {
             Console.WriteLine("Product found: " + product.Name);
             Console.WriteLine("Product ID: " + product.Id);
             Console.WriteLine("Product Quantity: " + product.Quantity);
-            Console.WriteLine("Product Price: " + product.Price);
+            Console.WriteLine("Product Price: " + product.Price.ToString("N"));
 
             Console.WriteLine("How many do you want to sell?");
             int quantity;
@@ -114,7 +114,7 @@ namespace GerenciadorProdutos {
                 Console.Write("Invalid input. Please enter a valid quantity: ");
             }
             double price = product.Price * quantity;
-            Console.WriteLine("You are selling " + quantity + " of " + product.Name + "for te price: " + price.ToString("F2"));
+            Console.WriteLine("You are selling " + quantity + " of " + product.Name + "for te price: " + price.ToString("N"));
             Console.WriteLine("Are you sure? (y/n)");
             string confirm = Console.ReadLine();
             if (confirm.ToLower() != "y") {
@@ -134,7 +134,7 @@ namespace GerenciadorProdutos {
 
             Sale sale = saleRecorder.Sales.FirstOrDefault(s => s.Id == saleId);
 
-            Console.WriteLine("You are undoing the sale of " + sale.Product.Name + " for the price: " + (sale.Product.Price * sale.Quantity).ToString("F2"));
+            Console.WriteLine("You are undoing the sale of " + sale.Product.Name + " for the price: " + (sale.Product.Price * sale.Quantity).ToString("N"));
             Console.WriteLine("Are you sure? (y/n)");
             string confirm = Console.ReadLine();
             if (confirm.ToLower() != "y") {

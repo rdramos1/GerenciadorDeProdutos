@@ -51,7 +51,7 @@ namespace GerenciadorProdutos.Entities {
         }
 
         public override string ToString() {
-            return $"Product Name: {Name}\nProduct ID: {Id}\nProduct Quantity: {Quantity}\nProduct Price: {Price}\nProduct Category: {Category.Name}\n";
+            return $"Product Name: {Name}\nProduct ID: {Id}\nProduct Quantity: {Quantity}\nProduct Price: {Price.ToString("N")}\nProduct Category: {Category.Name}\n";
         }
 
     }

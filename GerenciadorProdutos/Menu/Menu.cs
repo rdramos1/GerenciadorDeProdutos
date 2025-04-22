@@ -1,72 +1,62 @@
-﻿using GerenciadorProdutos.Entities;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using GerenciadorProdutos.Entities;
 using GerenciadorProdutos.Service;
 
-namespace GerenciadorProdutos {
-    class Screen {
+namespace GerenciadorProdutos.Menu {
+    class Menu {
 
+        private static InventoryService inventoryService = new InventoryService();
+        private static SaleService saleService = new SaleService();
 
-        private static Inventory inventory;
-        private static SaleRecorder saleRecorder;
-        private static bool Running = true;
-        private static bool ManageInventoryLoop;
-        private static bool SaleOptionsLoop;
-
-        public static void start(Inventory _inventory, SaleRecorder _saleRecorder) {
-            inventory = _inventory;
-            saleRecorder = _saleRecorder;
-
-            Console.WriteLine("Welcome to the Product Manager!");
-            while (Running) {
-                try {
-                    menu();
-                } catch (Exception ex) {
-                    Console.WriteLine(ex.ToString());
-                    Console.ReadLine();
+        public static void ShowPrincipalMenu() {
+            while (true) {
+                Console.WriteLine("<=====================================>");
+                Console.WriteLine("Welcome to the Product Manager!");
+                Console.WriteLine("1 - Sales options");
+                Console.WriteLine("2 - List Product");
+                Console.WriteLine("3 - Manage inventory");
+                Console.WriteLine("0 - Exit");
+                Console.WriteLine("<=====================================>");
+                Console.Write("Choose an option: ");
+                string option = Console.ReadLine();
+                Console.Clear();
+                switch (option) {
+                    case "1":
+                        SaleOptions();
+                        break;
+                    case "2":
+                        ListProducts();
+                        PressEnterToContinue();
+                        break;
+                    case "3":
+                        ManageInventory();
+                        break;
+                    case "0":
+                        return;
+                    default:
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Error.WriteLine("Invalid option, please try again.");
+                        Console.ResetColor();
+                        PressEnterToContinue();
+                        break;
                 }
             }
+        }
 
-        }
-        private static void menu() {
-            Console.WriteLine("1. Sales options");
-            Console.WriteLine("2. List Product");
-            Console.WriteLine("3. Manage inventory");
-            Console.WriteLine("4. Exit");
-            Console.Write("Choose an option: ");
-            string option = Console.ReadLine();
-            Console.Clear();
-            switch (option) {
-                case "1":
-                    SaleOptions();
-                    PressEnterToContinue();
-                    break;
-                case "2":
-                    ListProducts();
-                    PressEnterToContinue();
-                    break;
-                case "3":
-                    ManageInventoryLoop = true;
-                    ManageInventory();
-                    break;
-                case "4":
-                    Running = false;
-                    break;
-                default:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Error.WriteLine("Invalid option, please try again.");
-                    Console.ResetColor();
-                    PressEnterToContinue();
-                    break;
-            }
-        }
-        private static void SaleOptions() {
-            SaleOptionsLoop = true;
-            while (SaleOptionsLoop) {
+        public static void SaleOptions() {
+            while (true) {
                 Console.Clear();
+                Console.WriteLine("<=====================================>");
                 Console.WriteLine("Sales Options");
-                Console.WriteLine("1. New Sale");
-                Console.WriteLine("2. List Sales");
-                Console.WriteLine("3. Undo sale");
-                Console.WriteLine("4. Back to Main Menu");
+                Console.WriteLine("1 - New Sale");
+                Console.WriteLine("2 - List Sales");
+                Console.WriteLine("3 - Undo sale");
+                Console.WriteLine("0 - Back to Main Menu");
+                Console.WriteLine("<=====================================>");
                 Console.Write("Choose an option: ");
                 string option = Console.ReadLine();
                 Console.Clear();
@@ -76,16 +66,15 @@ namespace GerenciadorProdutos {
                         PressEnterToContinue();
                         break;
                     case "2":
-                        saleRecorder.ListSales();
+                        saleService.ListSales();
                         PressEnterToContinue();
                         break;
                     case "3":
                         UndoSale();
                         PressEnterToContinue();
                         break;
-                    case "4":
-                        SaleOptionsLoop = false;
-                        break;
+                    case "0":
+                        return;
                     default:
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Error.WriteLine("Invalid option, please try again.");
@@ -96,13 +85,13 @@ namespace GerenciadorProdutos {
             }
 
         }
-        private static void ListProducts() {
-            Console.WriteLine(inventory.GetProductsByCategory());
+        public static void ListProducts() {
+            Console.WriteLine(inventoryService.GetProductsByCategory());
         }
-        private static void NewSale() {
+        public static void NewSale() {
             Console.WriteLine("What product do you want to sell?");
             int productId = GetProductId();
-            Product product = inventory.Products.FirstOrDefault(p => p.Id == productId);
+            Product product = inventoryService.Products.FirstOrDefault(p => p.Id == productId);
             Console.WriteLine("Product found: " + product.Name);
             Console.WriteLine("Product ID: " + product.Id);
             Console.WriteLine("Product Quantity: " + product.Quantity);
@@ -121,18 +110,19 @@ namespace GerenciadorProdutos {
                 Console.WriteLine("Sale cancelled.");
                 return;
             }
-            saleRecorder.RegisterSale(product, quantity);
-            inventory.SellProduct(productId, quantity);
+            saleService.RegisterSale(product, quantity);
+            inventoryService.SellProduct(productId, quantity);
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Sale registered successfully!");
             Console.ResetColor();
 
+
         }
-        private static void UndoSale() {
+        public static void UndoSale() {
             Console.WriteLine("What sale do you want to undo?");
             int saleId = GetSaleId();
 
-            Sale sale = saleRecorder.Sales.FirstOrDefault(s => s.Id == saleId);
+            Sale sale = saleService.Sales.FirstOrDefault(s => s.Id == saleId);
 
             Console.WriteLine("You are undoing the sale of " + sale.Product.Name + " for the price: " + (sale.Product.Price * sale.Quantity).ToString("N"));
             Console.WriteLine("Are you sure? (y/n)");
@@ -142,20 +132,23 @@ namespace GerenciadorProdutos {
                 return;
             }
 
-            inventory.RestockProduct(sale.Product.Id, sale.Quantity);
-            saleRecorder.DeleteSale(sale);
+            inventoryService.RestockProduct(sale.Product.Id, sale.Quantity);
+            saleService.DeleteSale(sale);
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Sale undone successfully!");
             Console.ResetColor();
         }
 
-        private static void ManageInventory() {
-            while (ManageInventoryLoop) {
+        public static void ManageInventory() {
+            while (true) {
                 Console.Clear();
+                Console.WriteLine("<=====================================>");
                 Console.WriteLine("Manage Inventory");
-                Console.WriteLine("1. Add Product");
-                Console.WriteLine("2. Update Product");
-                Console.WriteLine("3. Back to Main Menu");
+                Console.WriteLine("1 - Add Product");
+                Console.WriteLine("2 - Update Product");
+                Console.WriteLine("3 - Delete Product");
+                Console.WriteLine("0 - Back to Main Menu");
+                Console.WriteLine("<=====================================>");
                 Console.Write("Choose an option: ");
                 string option = Console.ReadLine();
                 Console.Clear();
@@ -169,8 +162,11 @@ namespace GerenciadorProdutos {
                         PressEnterToContinue();
                         break;
                     case "3":
-                        ManageInventoryLoop = false;
+                        DeleteProduct();
+                        PressEnterToContinue();
                         break;
+                    case "0":
+                        return;
                     default:
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Error.WriteLine("Invalid option, please try again.");
@@ -181,7 +177,7 @@ namespace GerenciadorProdutos {
             }
         }
 
-        private static void AddProduct() {
+        public static void AddProduct() {
             Console.WriteLine("Add Product");
             Console.Write("Enter product name: ");
             string name = Console.ReadLine();
@@ -195,28 +191,28 @@ namespace GerenciadorProdutos {
             while (!double.TryParse(Console.ReadLine(), out price)) {
                 Console.Write("Invalid input. Please enter a valid price: ");
             }
-            
+
             int categoryId = GetCategoryId();
 
-            inventory.AddProductByCategoryId(name, quantity, price, categoryId);
+            inventoryService.AddProductByCategoryId(name, quantity, price, categoryId);
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Product added successfully!");
             Console.ResetColor();
         }
 
-        private static void UpdateProduct() {
+        public static void UpdateProduct() {
             Console.WriteLine("What product do you want to change?");
             int productId = GetProductId();
             Console.Clear();
 
-            Product product = inventory.Products.FirstOrDefault(p => p.Id == productId);
+            Product product = inventoryService.Products.FirstOrDefault(p => p.Id == productId);
 
             Console.WriteLine("What do you want to change?");
-            Console.WriteLine("1. Name");
-            Console.WriteLine("2. Quantity");
-            Console.WriteLine("3. Price");
-            Console.WriteLine("4. Category");
-            Console.WriteLine("5. Back to Manage Inventory");
+            Console.WriteLine("1 - Name");
+            Console.WriteLine("2 - Quantity");
+            Console.WriteLine("3 - Price");
+            Console.WriteLine("4 - Category");
+            Console.WriteLine("0 - Back to Manage Inventory");
             Console.Write("Choose an option: ");
             string option = Console.ReadLine();
             Console.Clear();
@@ -224,7 +220,7 @@ namespace GerenciadorProdutos {
                 case "1":
                     Console.Write("Enter new name: ");
                     string newName = Console.ReadLine();
-                    inventory.UpdateProduct(productId, newName, product.Quantity, product.Price, product.Category);
+                    inventoryService.UpdateProduct(productId, newName, product.Quantity, product.Price, product.Category);
                     break;
                 case "2":
                     Console.Write("Enter new quantity: ");
@@ -232,7 +228,7 @@ namespace GerenciadorProdutos {
                     while (!int.TryParse(Console.ReadLine(), out newQuantity)) {
                         Console.Write("Invalid input. Please enter a valid quantity: ");
                     }
-                    inventory.UpdateProduct(productId, product.Name, newQuantity, product.Price, product.Category);
+                    inventoryService.UpdateProduct(productId, product.Name, newQuantity, product.Price, product.Category);
                     break;
                 case "3":
                     Console.Write("Enter new price: ");
@@ -240,14 +236,14 @@ namespace GerenciadorProdutos {
                     while (!double.TryParse(Console.ReadLine(), out newPrice)) {
                         Console.Write("Invalid input. Please enter a valid price: ");
                     }
-                    inventory.UpdateProduct(productId, product.Name, product.Quantity, newPrice, product.Category);
+                    inventoryService.UpdateProduct(productId, product.Name, product.Quantity, newPrice, product.Category);
                     break;
                 case "4":
                     int categoryId = GetCategoryId();
-                    Category category = inventory.Categories.FirstOrDefault(c => c.Id == categoryId);
-                    inventory.UpdateProduct(productId, product.Name, product.Quantity, product.Price, category);
+                    Category category = inventoryService.Categories.FirstOrDefault(c => c.Id == categoryId);
+                    inventoryService.UpdateProduct(productId, product.Name, product.Quantity, product.Price, category);
                     break;
-                case "5":
+                case "0":
                     break;
                 default:
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -256,12 +252,26 @@ namespace GerenciadorProdutos {
                     PressEnterToContinue();
                     break;
             }
-
-            
-
         }
 
-        private static int GetCategoryId() {
+        public static void DeleteProduct() {
+            Console.WriteLine("What product do you want to delete?");
+            int productId = GetProductId();
+            Product product = inventoryService.Products.FirstOrDefault(p => p.Id == productId);
+            Console.WriteLine("You are deleting the product: " + product.Name);
+            Console.WriteLine("Are you sure? (y/n)");
+            string confirm = Console.ReadLine();
+            if (confirm.ToLower() != "y") {
+                Console.WriteLine("Product deletion cancelled.");
+                return;
+            }
+            inventoryService.Products.Remove(product);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Product deleted successfully!");
+            Console.ResetColor();
+        }
+
+        public static int GetCategoryId() {
             int categoryId;
             while (true) {
                 Console.Write("Enter category ID (or press Enter to list all categories): ");
@@ -269,10 +279,10 @@ namespace GerenciadorProdutos {
 
                 if (string.IsNullOrWhiteSpace(input)) {
                     Console.WriteLine("Available Categories:");
-                    Console.WriteLine(inventory.GetCategories());
+                    Console.WriteLine(inventoryService.GetCategories());
                 }
                 else if (int.TryParse(input, out categoryId)) {
-                    if (inventory.Categories.Any(c => c.Id == categoryId)) {
+                    if (inventoryService.Categories.Any(c => c.Id == categoryId)) {
                         return categoryId;
                     }
                     else {
@@ -288,17 +298,17 @@ namespace GerenciadorProdutos {
                 }
             }
         }
-        private static int GetProductId() {
+        public static int GetProductId() {
             int productId;
             while (true) {
                 Console.Write("Enter product ID (or press Enter to list all products): ");
                 string input = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(input)) {
                     Console.WriteLine("Available Products:");
-                    Console.WriteLine(inventory.GetProducts());
+                    Console.WriteLine(inventoryService.GetProducts());
                 }
                 else if (int.TryParse(input, out productId)) {
-                    if (inventory.Products.Any(p => p.Id == productId)) {
+                    if (inventoryService.Products.Any(p => p.Id == productId)) {
                         return productId;
                     }
                     else {
@@ -314,17 +324,17 @@ namespace GerenciadorProdutos {
                 }
             }
         }
-        private static int GetSaleId() {
+        public static int GetSaleId() {
             int saleId;
             while (true) {
                 Console.Write("Enter sale ID (or press Enter to list all sales): ");
                 string input = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(input)) {
                     Console.WriteLine("Available Sales:");
-                    saleRecorder.ListSales();
+                    saleService.ListSales();
                 }
                 else if (int.TryParse(input, out saleId)) {
-                    if (saleRecorder.Sales.Any(s => s.Id == saleId)) {
+                    if (saleService.Sales.Any(s => s.Id == saleId)) {
                         return saleId;
                     }
                     else {
@@ -340,8 +350,7 @@ namespace GerenciadorProdutos {
                 }
             }
         }
-        static void PressEnterToContinue() {
-            Console.WriteLine("");
+        public static void PressEnterToContinue() {
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("Press Enter to continue...");
             Console.ResetColor();

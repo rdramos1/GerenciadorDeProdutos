@@ -3,11 +3,11 @@ using GerenciadorProdutos.Entities;
 using GerenciadorProdutos.Exceptions;
 
 namespace GerenciadorProdutos.Service {
-    public class Inventory {
+    public class InventoryService {
         public List<Product> Products { get; private set; }
         public List<Category> Categories { get; private set; }
 
-        public Inventory() {
+        public InventoryService() {
             Products = new List<Product>();
             Categories = new List<Category>();
         }

@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using GerenciadorProdutos.Entities;
 
 namespace GerenciadorProdutos.Service {
-    class SaleRecorder {
+    class SaleService {
         public List<Sale> Sales { get; private set; }
 
-        public SaleRecorder() {
+        public SaleService() {
             Sales = new List<Sale>();
         }
 

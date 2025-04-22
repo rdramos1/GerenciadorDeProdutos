@@ -2,11 +2,20 @@
 using GerenciadorProdutos.Data;
 using GerenciadorProdutos.Entities;
 using GerenciadorProdutos.Interfaces;
+using GerenciadorProdutos.Menu;
 using GerenciadorProdutos.Service;
 
 namespace GerenciadorProdutos {
     public class Program {
         public static void Main(string[] args) {
+
+             
+
+            try {
+                Menu.Menu.ShowPrincipalMenu();
+            } catch(Exception e) {
+                Console.WriteLine(e.ToString());
+            }
 
             /*IDataBase dataBase = new JsonDataBase("C:\\temp\\GerenciadorDeProdutos");
 
@@ -15,10 +24,10 @@ namespace GerenciadorProdutos {
 
             dataBase.Save(inventory);
             dataBase.Save(saleRecorder); 
-            */
+            
 
-            Inventory inventory = new Inventory();
-            SaleRecorder saleRecorder = new SaleRecorder();
+            Inventory inventory = new InventoryService();
+            SaleService saleRecorder = new SaleService();
 
             inventory.CreateCategory("Electronics");
             inventory.CreateCategory("Clothing");
@@ -30,7 +39,7 @@ namespace GerenciadorProdutos {
             Console.WriteLine(inventory.ToString());
 
             Console.ReadLine();
-
+            */
         }
 
     }

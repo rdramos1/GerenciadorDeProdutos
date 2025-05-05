@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using GerenciadorProdutos.DTO;
 using GerenciadorProdutos.Exceptions;
 
 namespace GerenciadorProdutos.Entities {
@@ -48,6 +49,16 @@ namespace GerenciadorProdutos.Entities {
 
             
 
+        }
+
+        public ProductDTO ToDTO() {
+            return new ProductDTO {
+                Name = Name,
+                Id = Id,
+                Quantity = Quantity,
+                Price = Price,
+                CategoryId = Category.Id
+            };
         }
 
         public override string ToString() {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace GerenciadorProdutos.Exceptions {
-    class InventoryException : Exception {
+    public class InventoryException : Exception {
         public InventoryException(string message) : base(message) {
 
         }

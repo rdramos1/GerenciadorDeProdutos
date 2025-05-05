@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using GerenciadorProdutos.DTO;
 using GerenciadorProdutos.Exceptions;
 
 namespace GerenciadorProdutos.Entities {
@@ -16,14 +17,16 @@ namespace GerenciadorProdutos.Entities {
 
         }
        
+        public CategoryDTO ToDTO() {
+            return new CategoryDTO {
+                Name = Name,
+                Id = Id
+            };
+        }
         public override string ToString() {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"Category: {Name}");
             sb.AppendLine($"ID: {Id}");
-            sb.AppendLine("Products:");
-            foreach (Product product in Products) {
-                sb.AppendLine(product.ToString());
-            }
             return sb.ToString();
         }
 

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace GerenciadorProdutos.Exceptions {
-    class CategoryException : Exception {
+    public class CategoryException : Exception {
         public CategoryException(string message) : base(message) {
 
         }

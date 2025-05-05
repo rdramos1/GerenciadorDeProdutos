@@ -4,15 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GerenciadorProdutos.Entities;
+using GerenciadorProdutos.Repositories;
 using GerenciadorProdutos.Service;
 
-namespace GerenciadorProdutos.Menu {
+namespace GerenciadorProdutos {
     class Menu {
 
-        private static InventoryService inventoryService = new InventoryService();
-        private static SaleService saleService = new SaleService();
+        private InventoryService inventoryService = new InventoryService();       
+        private SaleService saleService = new SaleService();
 
-        public static void ShowPrincipalMenu() {
+        public Menu(InventoryService inventoryService, SaleService saleService) {
+            this.inventoryService = inventoryService;
+            this.saleService = saleService;
+        }
+
+        public void ShowPrincipalMenu() {
             while (true) {
                 Console.WriteLine("<=====================================>");
                 Console.WriteLine("Welcome to the Product Manager!");
@@ -47,7 +53,7 @@ namespace GerenciadorProdutos.Menu {
             }
         }
 
-        public static void SaleOptions() {
+        public void SaleOptions() {
             while (true) {
                 Console.Clear();
                 Console.WriteLine("<=====================================>");
@@ -85,13 +91,14 @@ namespace GerenciadorProdutos.Menu {
             }
 
         }
-        public static void ListProducts() {
+        public void ListProducts() {
             Console.WriteLine(inventoryService.GetProductsByCategory());
         }
-        public static void NewSale() {
+        public void NewSale() {
             Console.WriteLine("What product do you want to sell?");
             int productId = GetProductId();
             Product product = inventoryService.Products.FirstOrDefault(p => p.Id == productId);
+            Console.Clear();
             Console.WriteLine("Product found: " + product.Name);
             Console.WriteLine("Product ID: " + product.Id);
             Console.WriteLine("Product Quantity: " + product.Quantity);
@@ -102,8 +109,9 @@ namespace GerenciadorProdutos.Menu {
             while (!int.TryParse(Console.ReadLine(), out quantity)) {
                 Console.Write("Invalid input. Please enter a valid quantity: ");
             }
+            Console.Clear();
             double price = product.Price * quantity;
-            Console.WriteLine("You are selling " + quantity + " of " + product.Name + "for te price: " + price.ToString("N"));
+            Console.WriteLine("You are selling " + quantity + " of " + product.Name + " for te price: " + price.ToString("N"));
             Console.WriteLine("Are you sure? (y/n)");
             string confirm = Console.ReadLine();
             if (confirm.ToLower() != "y") {
@@ -118,7 +126,7 @@ namespace GerenciadorProdutos.Menu {
 
 
         }
-        public static void UndoSale() {
+        public void UndoSale() {
             Console.WriteLine("What sale do you want to undo?");
             int saleId = GetSaleId();
 
@@ -139,7 +147,7 @@ namespace GerenciadorProdutos.Menu {
             Console.ResetColor();
         }
 
-        public static void ManageInventory() {
+        public void ManageInventory() {
             while (true) {
                 Console.Clear();
                 Console.WriteLine("<=====================================>");
@@ -147,6 +155,7 @@ namespace GerenciadorProdutos.Menu {
                 Console.WriteLine("1 - Add Product");
                 Console.WriteLine("2 - Update Product");
                 Console.WriteLine("3 - Delete Product");
+                Console.WriteLine("4 - Create Category");
                 Console.WriteLine("0 - Back to Main Menu");
                 Console.WriteLine("<=====================================>");
                 Console.Write("Choose an option: ");
@@ -165,6 +174,10 @@ namespace GerenciadorProdutos.Menu {
                         DeleteProduct();
                         PressEnterToContinue();
                         break;
+                    case "4":
+                        CreateCategory();
+                        PressEnterToContinue();
+                        break;
                     case "0":
                         return;
                     default:
@@ -177,7 +190,7 @@ namespace GerenciadorProdutos.Menu {
             }
         }
 
-        public static void AddProduct() {
+        public void AddProduct() {
             Console.WriteLine("Add Product");
             Console.Write("Enter product name: ");
             string name = Console.ReadLine();
@@ -188,7 +201,7 @@ namespace GerenciadorProdutos.Menu {
             }
             Console.Write("Enter product price: ");
             double price;
-            while (!double.TryParse(Console.ReadLine(), out price)) {
+            while (!TryParseDouble(Console.ReadLine(), out price)) {
                 Console.Write("Invalid input. Please enter a valid price: ");
             }
 
@@ -200,7 +213,7 @@ namespace GerenciadorProdutos.Menu {
             Console.ResetColor();
         }
 
-        public static void UpdateProduct() {
+        public void UpdateProduct() {
             Console.WriteLine("What product do you want to change?");
             int productId = GetProductId();
             Console.Clear();
@@ -254,7 +267,7 @@ namespace GerenciadorProdutos.Menu {
             }
         }
 
-        public static void DeleteProduct() {
+        public void DeleteProduct() {
             Console.WriteLine("What product do you want to delete?");
             int productId = GetProductId();
             Product product = inventoryService.Products.FirstOrDefault(p => p.Id == productId);
@@ -271,7 +284,16 @@ namespace GerenciadorProdutos.Menu {
             Console.ResetColor();
         }
 
-        public static int GetCategoryId() {
+        public void CreateCategory() {
+            Console.WriteLine("Create Category");
+            Console.Write("Enter category name: ");
+            string name = Console.ReadLine();
+            inventoryService.CreateCategory(name);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Category created successfully!");
+            Console.ResetColor();
+        }
+        public int GetCategoryId() {
             int categoryId;
             while (true) {
                 Console.Write("Enter category ID (or press Enter to list all categories): ");
@@ -298,7 +320,7 @@ namespace GerenciadorProdutos.Menu {
                 }
             }
         }
-        public static int GetProductId() {
+        public int GetProductId() {
             int productId;
             while (true) {
                 Console.Write("Enter product ID (or press Enter to list all products): ");
@@ -324,7 +346,7 @@ namespace GerenciadorProdutos.Menu {
                 }
             }
         }
-        public static int GetSaleId() {
+        public int GetSaleId() {
             int saleId;
             while (true) {
                 Console.Write("Enter sale ID (or press Enter to list all sales): ");
@@ -350,12 +372,16 @@ namespace GerenciadorProdutos.Menu {
                 }
             }
         }
-        public static void PressEnterToContinue() {
+        public void PressEnterToContinue() {
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("Press Enter to continue...");
             Console.ResetColor();
             Console.ReadLine();
             Console.Clear();
+        }
+        private bool TryParseDouble(string input, out double result) {
+            input = input.Replace(',', '.');
+            return double.TryParse(input, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out result);
         }
 
     }

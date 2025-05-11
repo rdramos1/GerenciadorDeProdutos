@@ -3,7 +3,7 @@
 
 Este é um projeto pessoal de um sistema de gerenciamento de produtos desenvolvido em C#. O objetivo é oferecer um sistema em modo console para cadastro, listagem, atualização e exclusão de produtos, com categorias e controle de estoque.
 
-## 🔧 Tecnologias Utilizadas
+## Tecnologias Utilizadas
 - C#
 - .NET 9
 - Newtonsoft.Json (armazenamento dos dados em JSON)

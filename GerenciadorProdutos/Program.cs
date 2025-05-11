@@ -9,9 +9,9 @@ namespace GerenciadorProdutos {
     public class Program {
         public static void Main(string[] args) {
 
-            var produtossexo = new List<Product>();
+            
 
-            var repo = new JsonRepository<AppData>("C:\\temp\\GerenciadorDeProdutos\\data.json");
+            var repo = new JsonRepository("C:\\temp\\GerenciadorDeProdutos\\data.json");
             var AppData = repo.GetAll() ?? new AppData();
 
             var inv = new InventoryService(AppData) ?? new InventoryService();

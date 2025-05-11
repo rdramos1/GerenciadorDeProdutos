@@ -1,8 +1,9 @@
-﻿using GerenciadorProdutos.Entities;
+﻿using GerenciadorProdutos.Data;
+using GerenciadorProdutos.Entities;
 using Newtonsoft.Json;
 
 namespace GerenciadorProdutos.Repositories {
-    public class JsonRepository<AppData> : IRepository<AppData> {
+    public class JsonRepository {
         private readonly string _filePath;
         public JsonRepository(string filePath) {
             _filePath = filePath;
